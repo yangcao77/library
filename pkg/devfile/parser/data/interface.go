@@ -44,4 +44,10 @@ type DevfileData interface {
 	AddVolume(volume v1.Component, path string) error
 	DeleteVolume(name string) error
 	GetVolumeMountPath(name string) (string, error)
+
+	// Feature present in 210 and up
+	GetCustomType210() string
+
+	// Feature present in 220 and up
+	GetCustomType220() string
 }

@@ -3,6 +3,9 @@ package v2
 import (
 	v1 "github.com/devfile/api/pkg/apis/workspaces/v1alpha2"
 	"github.com/devfile/parser/pkg/devfile/parser/data/v2/common"
+
+	v210 "github.com/devfile/parser/pkg/devfile/parser/data/v2/2.1.0"
+	v220 "github.com/devfile/parser/pkg/devfile/parser/data/v2/2.2.0"
 )
 
 // GetComponents returns the slice of Component objects parsed from the Devfile
@@ -60,5 +63,28 @@ func (d *DevfileV2) UpdateComponent(component v1.Component) {
 	}
 	if index != -1 {
 		d.Components[index] = component
+	}
+}
+
+func (d *DevfileV2) GetCustomType210() string {
+
+	// This feature was introduced in 210; so any version 210 and up should use the 210 implementation
+	switch d.SchemaVersion {
+	case "2.0.0":
+		return ""
+	default:
+		return v210.GetCustomType210(d.Commands[1].Id)
+	}
+
+}
+
+func (d *DevfileV2) GetCustomType220() string {
+
+	// This feature was introduced in 220; so any version below 2.2.0 will return an empty obj
+	switch d.SchemaVersion {
+	case "2.2.0":
+		return v220.GetCustomType220(d.Commands[0].Id, d.Commands[1].Id)
+	default:
+		return ""
 	}
 }

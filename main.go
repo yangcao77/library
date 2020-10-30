@@ -31,6 +31,9 @@ func main() {
 				fmt.Println(command.Exec.Group.Kind)
 			}
 		}
+
+		fmt.Println("The 210 custom type is " + devfile.Data.GetCustomType210())
+		fmt.Println("The 220 custom type is " + devfile.Data.GetCustomType220())
 	}
 
 }
