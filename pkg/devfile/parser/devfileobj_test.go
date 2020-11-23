@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/devfile/api/pkg/attributes"
 	devfileCtx "github.com/devfile/library/pkg/devfile/parser/context"
 	v2 "github.com/devfile/library/pkg/devfile/parser/data/v2"
 	"github.com/devfile/library/pkg/testingutil"
@@ -134,15 +135,11 @@ func TestDevfileObj_OverrideCommands(t *testing.T) {
 								Commands: []v1.Command{
 									{
 										Id: "devbuild",
+										Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
+											"key-0": "value-0",
+										}),
 										CommandUnion: v1.CommandUnion{
 											Exec: &v1.ExecCommand{
-												LabeledCommand: v1.LabeledCommand{
-													BaseCommand: v1.BaseCommand{
-														Attributes: map[string]string{
-															"key-0": "value-0",
-														},
-													},
-												},
 												Env: []v1.EnvVar{
 													testingutil.GetFakeEnv("env-0", "value-0"),
 												},
@@ -161,13 +158,6 @@ func TestDevfileObj_OverrideCommands(t *testing.T) {
 						Id: "devbuild",
 						CommandUnionParentOverride: v1.CommandUnionParentOverride{
 							Exec: &v1.ExecCommandParentOverride{
-								LabeledCommandParentOverride: v1.LabeledCommandParentOverride{
-									BaseCommandParentOverride: v1.BaseCommandParentOverride{
-										Attributes: map[string]string{
-											"key-1": "value-1",
-										},
-									},
-								},
 								Env: []v1.EnvVarParentOverride{
 									testingutil.GetFakeEnvParentOverride("env-0", "value-0-0"),
 									testingutil.GetFakeEnvParentOverride("env-1", "value-1"),
