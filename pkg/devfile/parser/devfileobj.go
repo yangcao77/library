@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	v1 "github.com/devfile/api/pkg/apis/workspaces/v1alpha2"
+	"github.com/devfile/api/pkg/attributes"
 	devfileCtx "github.com/devfile/library/pkg/devfile/parser/context"
 	"github.com/devfile/library/pkg/devfile/parser/data"
 	"github.com/pkg/errors"
@@ -92,7 +93,13 @@ func (d DevfileObj) OverrideCommands(overridePatch []v1.CommandParentOverride) (
 					// If the original command and patch command are different types, then we can't patch, so throw an error
 					return fmt.Errorf("cannot overide command %q with a different type of command", originalCommand.Id)
 				}
-
+				commandArrtibute, err := overrideAttributes(patchCommand.Attributes, originalCommand.Attributes)
+				if err != nil {
+					return err
+				}
+				if patchCommand.Attributes != nil || originalCommand.Attributes != nil {
+					devfileCommand.Attributes = commandArrtibute
+				}
 				d.Data.UpdateCommand(devfileCommand)
 			}
 		}
@@ -138,12 +145,27 @@ func overrideExecCommand(patchCommand v1.CommandParentOverride, originalCommand 
 	if err != nil {
 		return v1.Command{}, errors.Wrap(err, "failed to unmarshal override commands")
 	}
+
 	return v1.Command{
 		Id: patchCommand.Id,
 		CommandUnion: v1.CommandUnion{
 			Exec: &updatedExec,
 		},
 	}, nil
+}
+
+func overrideAttributes(patchAttributes attributes.Attributes, originalAttributes attributes.Attributes) (attributes.Attributes, error) {
+	var updatedAttributes attributes.Attributes
+	merged, err := handleMerge(patchAttributes, originalAttributes, attributes.Attributes{})
+	if err != nil {
+		return attributes.Attributes{}, errors.Wrap(err, "failed to merge")
+	}
+
+	err = json.Unmarshal(merged, &updatedAttributes)
+	if err != nil {
+		return attributes.Attributes{}, errors.Wrap(err, "failed to unmarshal override attributes")
+	}
+	return updatedAttributes, nil
 }
 
 // OverrideProjects overrides the projects of the parent devfile

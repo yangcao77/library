@@ -156,6 +156,9 @@ func TestDevfileObj_OverrideCommands(t *testing.T) {
 				overridePatch: []v1.CommandParentOverride{
 					{
 						Id: "devbuild",
+						Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
+							"key-1": "value-1",
+						}),
 						CommandUnionParentOverride: v1.CommandUnionParentOverride{
 							Exec: &v1.ExecCommandParentOverride{
 								Env: []v1.EnvVarParentOverride{
@@ -176,16 +179,12 @@ func TestDevfileObj_OverrideCommands(t *testing.T) {
 								Commands: []v1.Command{
 									{
 										Id: "devbuild",
+										Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
+											"key-0": "value-0",
+											"key-1": "value-1",
+										}),
 										CommandUnion: v1.CommandUnion{
 											Exec: &v1.ExecCommand{
-												LabeledCommand: v1.LabeledCommand{
-													BaseCommand: v1.BaseCommand{
-														Attributes: map[string]string{
-															"key-0": "value-0",
-															"key-1": "value-1",
-														},
-													},
-												},
 												Env: []v1.EnvVar{
 													testingutil.GetFakeEnv("env-0", "value-0-0"),
 													testingutil.GetFakeEnv("env-1", "value-1"),
@@ -617,10 +616,10 @@ func TestDevfileObj_OverrideComponents(t *testing.T) {
 											Container: &v1.ContainerComponent{
 												Endpoints: []v1.Endpoint{
 													{
-														Attributes: map[string]string{
+														Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
 															"key-0": "value-0",
 															"key-1": "value-1",
-														},
+														}),
 														Name:       "endpoint-0",
 														TargetPort: 8080,
 													},
@@ -650,17 +649,17 @@ func TestDevfileObj_OverrideComponents(t *testing.T) {
 							Container: &v1.ContainerComponentParentOverride{
 								Endpoints: []v1.EndpointParentOverride{
 									{
-										Attributes: map[string]string{
+										Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
 											"key-1":      "value-1-1",
 											"key-append": "value-append",
-										},
+										}),
 										Name:       "endpoint-0",
 										TargetPort: 9090,
 									},
 									{
-										Attributes: map[string]string{
+										Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
 											"key-0": "value-0",
-										},
+										}),
 										Name:       "endpoint-1",
 										TargetPort: 3000,
 									},
@@ -703,18 +702,18 @@ func TestDevfileObj_OverrideComponents(t *testing.T) {
 												},
 												Endpoints: []v1.Endpoint{
 													{
-														Attributes: map[string]string{
+														Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
 															"key-0":      "value-0",
 															"key-1":      "value-1-1",
 															"key-append": "value-append",
-														},
+														}),
 														Name:       "endpoint-0",
 														TargetPort: 9090,
 													},
 													{
-														Attributes: map[string]string{
+														Attributes: attributes.Attributes{}.FromStringMap(map[string]string{
 															"key-0": "value-0",
-														},
+														}),
 														Name:       "endpoint-1",
 														TargetPort: 3000,
 													},
