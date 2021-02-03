@@ -5,7 +5,7 @@ metadata:
   attributes:
     alpha.build-dockerfile: /relative/path/to/Dockerfile
 parent:
-  uri: https://raw.githubusercontent.com/odo-devfiles/registry/master/devfiles/nodejs/devfile.yaml
+  uri: testtmp/devfile.yaml
   commands:
   - id: install
     exec:
@@ -21,7 +21,7 @@ starterProjects:
     remotes:
       origin: https://github.com/odo-devfiles/nodejs-ex.git
 components:
-- name: runtime2
+- name: runtime2-url
   attributes:
     tool: console-import
     import:
@@ -34,7 +34,7 @@ components:
     memoryLimit: 1024Mi
     mountSources: true
     sourceMapping: /project
-- name: runtime3
+- name: runtime3-url
   attributes:
     tool: odo
     cli:
@@ -47,7 +47,7 @@ components:
     memoryLimit: 1024Mi
     mountSources: true
     sourceMapping: /project
-- name: runtime4
+- name: runtime4-url
   attributes:
     tool: workspace-operator
   container:
