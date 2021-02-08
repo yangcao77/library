@@ -1,55 +1,43 @@
 schemaVersion: 2.0.0
 metadata:
-  name: nodejs
-  version: 2.0.0
-  alpha.build-dockerfile: "https://raw.githubusercontent.com/odo-devfiles/registry/master/devfiles/nodejs/build/Dockerfile"
-  alpha.deployment-manifest: "https://raw.githubusercontent.com/odo-devfiles/registry/master/devfiles/nodejs/deploy/deployment-manifest.yaml"
+  name: java-springboot
+  version: 1.1.0
 starterProjects:
-  - name: nodejs-starter
+  - name: springbootproject-parent2
     git:
       remotes:
-        origin: "https://github.com/odo-devfiles/nodejs-ex.git"
+        origin: "https://github.com/odo-devfiles/springboot-ex.git"
 components:
-  - name: devfile-in-testtemp-urlcopy
+  - name: container-in-relative-url
     container:
-      image: registry.access.redhat.com/ubi8/nodejs-14:latest
-      memoryLimit: 1024Mi
+      image: quay.io/eclipse/che-java11-maven:nightly
+      memoryLimit: 768Mi
       mountSources: true
-      sourceMapping: /project
-      endpoints:
-        - name: http-3000
-          targetPort: 3000
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+  - name: m2
+    volume:
+      size: 3Gi
 commands:
-  - id: install
+  - id: build-parent2
     exec:
-      component: runtime
-      commandLine: npm install
-      workingDir: /project
+      component: container-in-relative-url
+      commandLine: "mvn clean -Dmaven.repo.local=/home/user/.m2/repository package -Dmaven.test.skip=true"
       group:
         kind: build
-        isDefault: true
-  - id: run
+        isDefault: false
+  - id: run-parent2
     exec:
-      component: runtime
-      commandLine: npm start
-      workingDir: /project
+      component: container-in-relative-url
+      commandLine: "mvn -Dmaven.repo.local=/home/user/.m2/repository spring-boot:run"
       group:
         kind: run
-        isDefault: true
-  - id: debug
+        isDefault: false
+  - id: debug-parent2
     exec:
-      component: runtime
-      commandLine: npm run debug
-      workingDir: /project
+      component: container-in-relative-url
+      commandLine: "java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=${DEBUG_PORT},suspend=n -jar target/*.jar"
       group:
         kind: debug
-        isDefault: true
-  - id: test
-    exec:
-      component: runtime
-      commandLine: npm test
-      workingDir: /project
-      group:
-        kind: test
-        isDefault: true
-
+        isDefault: false
