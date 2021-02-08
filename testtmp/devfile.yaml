@@ -2,11 +2,11 @@ schemaVersion: 2.0.0
 metadata:
   name: java-springboot
   version: 1.1.0
-starterProjects:
-  - name: springbootproject-parent2
-    git:
-      remotes:
-        origin: "https://github.com/odo-devfiles/springboot-ex.git"
+#starterProjects:
+#  - name: springbootproject
+#    git:
+#      remotes:
+#        origin: "https://github.com/odo-devfiles/springboot-ex.git"
 components:
   - name: container-in-relative-url
     container:
@@ -20,24 +20,25 @@ components:
     volume:
       size: 3Gi
 commands:
-  - id: build-parent2
+  - id: build2
     exec:
       component: container-in-relative-url
       commandLine: "mvn clean -Dmaven.repo.local=/home/user/.m2/repository package -Dmaven.test.skip=true"
       group:
         kind: build
         isDefault: false
-  - id: run-parent2
+  - id: run2
     exec:
       component: container-in-relative-url
       commandLine: "mvn -Dmaven.repo.local=/home/user/.m2/repository spring-boot:run"
       group:
         kind: run
         isDefault: false
-  - id: debug-parent2
+  - id: debug2
     exec:
       component: container-in-relative-url
       commandLine: "java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=${DEBUG_PORT},suspend=n -jar target/*.jar"
       group:
         kind: debug
         isDefault: false
+
