@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/devfile/library/pkg/util"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/client-go/tools/clientcmd"
 	"net/url"
 	"path"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -381,13 +380,14 @@ func parseFromKubeCRD(importReference v1.ImportReference, resolveCtx *resolution
 			namespace = tool.defaultNamespace
 		} else {
 			// use current namespace if namespace is not set in devfile and not provided by consumer
-			loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
-			configOverrides := &clientcmd.ConfigOverrides{}
-			config := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
-			namespace, _, err = config.Namespace()
-			if err != nil {
-				return DevfileObj{}, fmt.Errorf("kubernetes namespace is not provided, and cannot get current running cluster's namespace: %v", err)
-			}
+			//loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+			//configOverrides := &clientcmd.ConfigOverrides{}
+			//config := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
+			//namespace, _, err = config.Namespace()
+			//if err != nil {
+			//	return DevfileObj{}, fmt.Errorf("kubernetes namespace is not provided, and cannot get current running cluster's namespace: %v", err)
+			//}
+			return DevfileObj{}, fmt.Errorf("kubernetes namespace is not provided")
 		}
 	}
 
