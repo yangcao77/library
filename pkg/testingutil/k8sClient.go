@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/devfile/api/v2/pkg/apis/workspaces/v1alpha2"
+	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -15,7 +16,7 @@ type FakeK8sClient struct {
 	Errors                map[string]string
 }
 
-func (client *FakeK8sClient) Get(_ context.Context, namespacedName client.ObjectKey, obj client.Object) error {
+func (client *FakeK8sClient) Get(_ context.Context, namespacedName client.ObjectKey, obj runtime.Object) error {
 	template, ok := obj.(*v1alpha2.DevWorkspaceTemplate)
 	if !ok {
 		return fmt.Errorf("called Get() in fake client with non-DevWorkspaceTemplate")
