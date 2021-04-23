@@ -379,14 +379,6 @@ func parseFromKubeCRD(importReference v1.ImportReference, resolveCtx *resolution
 		if tool.defaultNamespace != "" {
 			namespace = tool.defaultNamespace
 		} else {
-			// use current namespace if namespace is not set in devfile and not provided by consumer
-			//loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
-			//configOverrides := &clientcmd.ConfigOverrides{}
-			//config := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
-			//namespace, _, err = config.Namespace()
-			//if err != nil {
-			//	return DevfileObj{}, fmt.Errorf("kubernetes namespace is not provided, and cannot get current running cluster's namespace: %v", err)
-			//}
 			return DevfileObj{}, fmt.Errorf("kubernetes namespace is not provided")
 		}
 	}
