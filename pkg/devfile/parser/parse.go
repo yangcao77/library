@@ -5,23 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/devfile/library/pkg/util"
-	"k8s.io/apimachinery/pkg/types"
 	"net/url"
 	"path"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
-
-	devfileCtx "github.com/devfile/library/pkg/devfile/parser/context"
-	"github.com/devfile/library/pkg/devfile/parser/data"
-	"github.com/devfile/library/pkg/devfile/parser/data/v2/common"
-	"k8s.io/klog"
-
-	"reflect"
 
 	v1 "github.com/devfile/api/v2/pkg/apis/workspaces/v1alpha2"
 	apiOverride "github.com/devfile/api/v2/pkg/utils/overriding"
 	"github.com/devfile/api/v2/pkg/validation"
+	devfileCtx "github.com/devfile/library/pkg/devfile/parser/context"
+	"github.com/devfile/library/pkg/devfile/parser/data"
+	"github.com/devfile/library/pkg/devfile/parser/data/v2/common"
 	"github.com/pkg/errors"
+	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+	"k8s.io/klog"
+	"reflect"
+	"sigs.k8s.io/yaml"
 )
 
 // ParseDevfile func validates the devfile integrity.
@@ -78,7 +76,8 @@ type ParserArgs struct {
 	// Context is the context used for making Kubernetes requests
 	Context context.Context
 	// K8sClient is the Kubernetes client instance used for interacting with a cluster
-	K8sClient client.Client
+	// K8sClient client.Client
+	K8sClient clientset.Clientset
 }
 
 // ParseDevfile func populates the devfile data, parses and validates the devfile integrity.
@@ -122,7 +121,8 @@ type resolverTools struct {
 	// Context is the context used for making Kubernetes or HTTP requests
 	context context.Context
 	// K8sClient is the Kubernetes client instance used for interacting with a cluster
-	k8sClient client.Client
+	// k8sClient client.Client
+	k8sClient clientset.Clientset
 }
 
 func populateAndParseDevfile(d DevfileObj, resolveCtx *resolutionContextTree, tool resolverTools, flattenedDevfile bool) (DevfileObj, error) {
@@ -368,8 +368,8 @@ func getDevfileFromRegistry(id, registryURL string) ([]byte, error) {
 }
 
 func parseFromKubeCRD(importReference v1.ImportReference, resolveCtx *resolutionContextTree, tool resolverTools) (d DevfileObj, err error) {
-
-	if tool.k8sClient == nil || tool.context == nil {
+	var emptyClientSet clientset.Clientset
+	if tool.k8sClient == emptyClientSet || tool.context == nil {
 		return DevfileObj{}, fmt.Errorf("Kubernetes client and context are required to parse from Kubernetes CRD")
 	}
 	namespace := importReference.Kubernetes.Namespace
@@ -384,14 +384,24 @@ func parseFromKubeCRD(importReference v1.ImportReference, resolveCtx *resolution
 	}
 
 	var dwTemplate v1.DevWorkspaceTemplate
-	namespacedName := types.NamespacedName{
-		Name:      importReference.Kubernetes.Name,
-		Namespace: namespace,
-	}
-	err = tool.k8sClient.Get(tool.context, namespacedName, &dwTemplate)
+	//namespacedName := types.NamespacedName{
+	//	Name:      importReference.Kubernetes.Name,
+	//	Namespace: namespace,
+	//}
+
+	rawdata, err := tool.k8sClient.RESTClient().Get().Namespace(namespace).Name(importReference.Kubernetes.Name).DoRaw(tool.context)
 	if err != nil {
 		return DevfileObj{}, err
 	}
+	err = yaml.Unmarshal(rawdata, dwTemplate)
+	if err != nil {
+		return DevfileObj{}, err
+	}
+
+	//err = tool.k8sClient.Get(tool.context, namespacedName, &dwTemplate)
+	//if err != nil {
+	//	return DevfileObj{}, err
+	//}
 
 	d, err = convertDevWorskapceTemplateToDevObj(dwTemplate)
 	if err != nil {
