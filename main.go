@@ -5,7 +5,7 @@ import (
 	"os"
 	"reflect"
 	"strings"
-
+	"gopkg.in/yaml.v2"
 	devfilepkg "github.com/devfile/library/pkg/devfile"
 	"github.com/devfile/library/pkg/devfile/parser"
 	v2 "github.com/devfile/library/pkg/devfile/parser/data/v2"
@@ -16,8 +16,48 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "updateSchema" {
 		ReplaceSchemaFile()
 	} else {
-		parserTest()
+		if len(os.Args) != 0 {
+			testyaml()
+		} else {
+			parserTest()
+		}
 	}
+}
+
+func testyaml() {
+	// my input order
+	var data = `
+a: Easy!
+b:
+  d: [3, 4]
+  c: 2
+`
+
+	type T struct {
+		B struct {
+			D        []int `yaml:",flow"`
+			RenamedC int   `yaml:"c"`
+		}
+		A string
+	}
+
+		t := T{}
+		// order will follow struct
+		yaml.Unmarshal([]byte(data), &t)
+		fmt.Printf("--- t:\n%v\n\n", t)
+
+		d, _ := yaml.Marshal(&t)
+		fmt.Printf("--- t dump:\n%s\n\n", string(d))
+
+
+
+		m := make(map[interface{}]interface{})
+		// order will follow alphabet
+		yaml.Unmarshal([]byte(data), &m)
+		fmt.Printf("--- m:\n%v\n\n", m)
+
+		d, _ = yaml.Marshal(&m)
+		fmt.Printf("--- m dump:\n%s\n\n", string(d))
 }
 
 func parserTest() {
