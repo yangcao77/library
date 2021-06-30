@@ -2,7 +2,7 @@ package parser
 
 import (
 	"context"
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"github.com/devfile/library/pkg/util"
 	"k8s.io/apimachinery/pkg/types"
@@ -11,6 +11,7 @@ import (
 	"path"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
+	"gopkg.in/yaml.v2"
 
 	devfileCtx "github.com/devfile/library/pkg/devfile/parser/context"
 	"github.com/devfile/library/pkg/devfile/parser/data"
@@ -42,9 +43,10 @@ func parseDevfile(d DevfileObj, resolveCtx *resolutionContextTree, tool resolver
 	}
 
 	// Unmarshal devfile content into devfile struct
-	err = json.Unmarshal(d.Ctx.GetDevfileContent(), &d.Data)
+	// err = json.Unmarshal(d.Ctx.GetDevfileContent(), &d.Data)
+	err = yaml.Unmarshal(d.Ctx.GetDevfileContent(),&d.Data)
 	if err != nil {
-		return d, errors.Wrapf(err, "failed to decode devfile content")
+		return d, errors.Wrapf(err, "hahahahfailed to decode devfile content")
 	}
 
 	if flattenedDevfile {

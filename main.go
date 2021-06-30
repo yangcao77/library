@@ -16,7 +16,7 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "updateSchema" {
 		ReplaceSchemaFile()
 	} else {
-		if len(os.Args) != 0 {
+		if len(os.Args) != 1 {
 			testyaml()
 		} else {
 			parserTest()

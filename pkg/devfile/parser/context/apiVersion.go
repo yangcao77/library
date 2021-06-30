@@ -1,7 +1,8 @@
 package parser
 
 import (
-	"encoding/json"
+	"gopkg.in/yaml.v2"
+	// "encoding/json"
 	"fmt"
 
 	"github.com/devfile/library/pkg/devfile/parser/data"
@@ -13,10 +14,12 @@ import (
 func (d *DevfileCtx) SetDevfileAPIVersion() error {
 
 	// Unmarshal JSON into map
-	var r map[string]interface{}
-	err := json.Unmarshal(d.rawContent, &r)
+	// var r map[string]interface{}
+	r := make(map[string]interface{})
+	// err := json.Unmarshal(d.rawContent, &r)
+	err := yaml.Unmarshal(d.rawContent, &r)
 	if err != nil {
-		return errors.Wrapf(err, "failed to decode devfile json")
+		return errors.Wrapf(err, "failed to decode devfile yaml")
 	}
 
 	// Get "schemaVersion" value from map for devfile V2

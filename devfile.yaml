@@ -5,7 +5,7 @@ metadata:
   attributes:
     alpha.build-dockerfile: /relative/path/to/Dockerfile
 variables:
-  test: testValue
+  test1: testValue
 parent:
   # uri: https://raw.githubusercontent.com/odo-devfiles/registry/master/devfiles/nodejs/devfile.yaml
   id: nodejs
@@ -71,7 +71,7 @@ commands:
     group:
       isDefault: false
       kind: build
-    workingDir: "{{test}}"
+    workingDir: "{{test1}}"
   id: install2
   attributes:
     tool: odo

@@ -17,6 +17,7 @@ require (
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.6.1
 	github.com/xeipuuv/gojsonschema v1.2.0
+	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.19.2
 	k8s.io/apimachinery v0.19.2
 	k8s.io/client-go v0.19.2
@@ -24,3 +25,5 @@ require (
 	sigs.k8s.io/controller-runtime v0.7.0
 	sigs.k8s.io/yaml v1.2.0
 )
+
+replace github.com/devfile/api/v2 => github.com/yangcao77/api/v2 v2.0.0-20210630185024-7100cbce8575
