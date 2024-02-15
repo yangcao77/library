@@ -54,9 +54,11 @@ func parserTest() {
 	}
 	_, warning, err := devfilepkg.ParseDevfileAndValidate(args)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
+		// fmt.Println(err)
 	} else {
 		if len(warning.Commands) > 0 || len(warning.Components) > 0 || len(warning.Projects) > 0 || len(warning.StarterProjects) > 0 {
+			// stdout
 			fmt.Printf("top-level variables were not substituted successfully %+v\n", warning)
 		}
 	}
